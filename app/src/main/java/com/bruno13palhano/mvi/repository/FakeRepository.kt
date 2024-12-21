@@ -1,5 +1,8 @@
 package com.bruno13palhano.mvi.repository
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 internal class FakeRepository @Inject constructor(): Repository {
@@ -19,6 +22,9 @@ internal class FakeRepository @Inject constructor(): Repository {
     }
 
     override suspend fun getTexts(): List<String> {
-        return texts
+        return CoroutineScope(Dispatchers.IO).run {
+            delay(3000)
+            texts
+        }
     }
 }
