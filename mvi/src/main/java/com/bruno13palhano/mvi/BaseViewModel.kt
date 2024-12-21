@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 abstract class BaseViewModel<Action: ViewAction, Event: ViewEvent, State: ViewState, SideEffect: ViewSideEffect>(
-    protected val initialState: State,
-    protected val actionProcessor: ActionProcessor<Action, Event>,
+    initialState: State,
+    protected val actionProcessor: ActionProcessor<Action, State, Event>,
     protected val reducer: Reducer<State, Event, SideEffect>
 ) : ViewModel() {
     private val _effects = Channel<SideEffect>(capacity = Channel.CONFLATED)
@@ -21,16 +21,15 @@ abstract class BaseViewModel<Action: ViewAction, Event: ViewEvent, State: ViewSt
 
     fun onAction(action: Action) {
         viewModelScope.launch {
-            actionProcessor.process(action).collect {
-                val (newState, sideEffect) = reducer.reduce(previousState = _states.value, event = it)
+            actionProcessor.process(
+                action = action, currentState = _states.value
+            ).collect { event ->
+                val (newState, sideEffect) =
+                    reducer.reduce(previousState = _states.value, event = event)
 
                 _states.value = newState
-                sideEffect?.let { effect -> sendEffect(effect) }
+                sideEffect?.let { effect -> _effects.trySend(effect) }
             }
         }
-    }
-
-    protected fun sendEffect(effect: SideEffect) {
-        _effects.trySend(effect)
     }
 }
