@@ -11,6 +11,6 @@ internal class HomeViewModel @Inject constructor(
     repository: Repository
 ): BaseViewModel<HomeAction, HomeEvent, HomeState, HomeSideEffect>(
     initialState = homeInitialState,
-    actionProcessor = HomeActionProcessor(homeState = homeInitialState, repository = repository),
+    actionProcessor = HomeActionProcessor(repository = repository),
     reducer = HomeReducer()
 )

@@ -9,7 +9,6 @@ import com.bruno13palhano.mvi.ViewState
 @Immutable
 internal data class HomeState(
     val isLoading: Boolean,
-    val isValidating: Boolean,
     val isError: Boolean,
     val texts: List<String>,
     val homeInputs: HomeInputs,
@@ -17,7 +16,6 @@ internal data class HomeState(
     companion object {
         val initialState = HomeState(
             isLoading = false,
-            isValidating = false,
             isError = false,
             texts = emptyList(),
             homeInputs = HomeInputs()
@@ -28,7 +26,6 @@ internal data class HomeState(
 @Immutable
 internal sealed class HomeEvent : ViewEvent {
     data class Loading(val isLoading: Boolean) : HomeEvent()
-    data object Validate : HomeEvent()
     data class UpdateTexts(val texts: List<String>) : HomeEvent()
     data class Done(val text: String) : HomeEvent()
     data object Error : HomeEvent()

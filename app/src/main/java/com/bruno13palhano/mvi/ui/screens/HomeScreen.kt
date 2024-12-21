@@ -47,10 +47,6 @@ internal fun HomeRoute(
         viewModel.onAction(HomeAction.OnUpdateTexts)
     }
 
-    LaunchedEffect(state) {
-        println("current state: $state")
-    }
-
     LaunchedEffect(effects) {
         effects.collect { effect ->
             when (effect) {
