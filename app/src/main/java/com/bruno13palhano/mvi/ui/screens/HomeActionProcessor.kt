@@ -2,40 +2,44 @@ package com.bruno13palhano.mvi.ui.screens
 
 import com.bruno13palhano.mvi.ActionProcessor
 import com.bruno13palhano.mvi.repository.Repository
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.channelFlow
 
 internal class HomeActionProcessor(
-    private val homeState: HomeState,
     private val repository: Repository
-) : ActionProcessor<HomeAction, HomeEvent> {
-    override fun process(action: HomeAction): Flow<HomeEvent> {
-        return flow {
+) : ActionProcessor<HomeAction, HomeState, HomeEvent> {
+    override fun process(action: HomeAction, currentState: HomeState): Flow<HomeEvent> {
+        return channelFlow {
             when (action) {
                 is HomeAction.OnUpdateTexts -> updateTexts()
 
-                is HomeAction.OnValidate -> validate()
+                is HomeAction.OnValidate -> validate(currentState = currentState)
 
-                is HomeAction.OnDismissKeyboard -> emit(HomeEvent.DismissKeyboard)
+                is HomeAction.OnDismissKeyboard -> send(HomeEvent.DismissKeyboard)
             }
+
+            awaitClose()
         }
     }
 
-    private suspend fun FlowCollector<HomeEvent>.validate() {
-        if (homeState.homeInputs.isValid()) {
-            emit(HomeEvent.Validate)
-            repository.insertText(text = homeState.homeInputs.text)
-            updateTexts()
-            emit(HomeEvent.Done(text = homeState.homeInputs.text))
+    private suspend fun ProducerScope<HomeEvent>.validate(currentState: HomeState) {
+        if (currentState.homeInputs.isValid()) {
+            done(currentState = currentState)
         } else {
-            emit(HomeEvent.Error)
+            send(HomeEvent.Error)
         }
     }
 
-    private suspend fun FlowCollector<HomeEvent>.updateTexts() {
+    private suspend fun ProducerScope<HomeEvent>.done(currentState: HomeState) {
+        repository.insertText(text = currentState.homeInputs.text)
+        updateTexts()
+        send(HomeEvent.Done(text = currentState.homeInputs.text))
+    }
+
+    private suspend fun ProducerScope<HomeEvent>.updateTexts() {
         val texts = repository.getTexts()
-        emit(HomeEvent.UpdateTexts(texts = texts))
+        send(HomeEvent.UpdateTexts(texts = texts))
     }
 }
