@@ -1,4 +1,4 @@
-package com.bruno13palhano.mvi.ui.screens
+package com.bruno13palhano.mvi.ui.screens.home
 
 import com.bruno13palhano.mvi.BasePresenter
 import com.bruno13palhano.mvi.repository.Repository
@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 
 internal class HomePresenter @Inject constructor(
-   initialState: HomeState,
+    initialState: HomeState,
     repository: Repository,
     @IOScope private val ioScope: CoroutineScope
 ) : BasePresenter<HomeAction, HomeEvent, HomeState, HomeSideEffect>(

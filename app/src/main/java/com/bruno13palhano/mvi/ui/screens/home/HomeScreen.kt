@@ -1,10 +1,13 @@
-package com.bruno13palhano.mvi.ui.screens
+package com.bruno13palhano.mvi.ui.screens.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -27,6 +30,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bruno13palhano.mvi.ui.screens.clickableWithoutRipple
+import com.bruno13palhano.mvi.ui.screens.rememberFlowWithLifecycle
+import com.bruno13palhano.mvi.ui.screens.rememberPresenter
 import kotlinx.coroutines.launch
 
 @Composable
@@ -83,7 +89,9 @@ private fun HomeContent(
     onAction: (action: HomeAction) -> Unit
 ) {
     Scaffold(
-        modifier = Modifier.clickableWithoutRipple { onAction(HomeAction.OnDismissKeyboard) },
+        modifier = Modifier
+            .consumeWindowInsets(WindowInsets.safeDrawing)
+            .clickableWithoutRipple { onAction(HomeAction.OnDismissKeyboard) },
         topBar = {
             TopAppBar(
                 title = { Text(text = "MVI") }
@@ -99,7 +107,7 @@ private fun HomeContent(
         if (state.isLoading) {
             Box(
                 modifier = Modifier
-                    .padding(it)
+                    .consumeWindowInsets(it)
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
@@ -109,7 +117,11 @@ private fun HomeContent(
                 )
             }
         } else {
-            LazyColumn(modifier = Modifier.padding(it)) {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(it)
+                    .consumeWindowInsets(it)
+            ) {
                 stickyHeader {
                     OutlinedTextField(
                         modifier = Modifier

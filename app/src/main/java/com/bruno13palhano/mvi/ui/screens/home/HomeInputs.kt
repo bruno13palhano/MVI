@@ -1,4 +1,4 @@
-package com.bruno13palhano.mvi.ui.screens
+package com.bruno13palhano.mvi.ui.screens.home
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

@@ -1,4 +1,4 @@
-package com.bruno13palhano.mvi.ui.screens
+package com.bruno13palhano.mvi.ui.screens.home
 
 import com.bruno13palhano.mvi.Reducer
 

@@ -1,7 +1,10 @@
 package com.bruno13palhano.mvi.ui.screens.other
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,6 +51,7 @@ private fun HomeContent(
     onAction: (action: OtherAction) -> Unit
 ) {
     Scaffold(
+        modifier = Modifier.consumeWindowInsets(WindowInsets.safeDrawing),
         topBar = {
             TopAppBar(
                 title = { Text(text = "Other Screen") },
@@ -62,7 +66,11 @@ private fun HomeContent(
             )
         }
     ) {
-        Column(modifier = Modifier.padding(it)) {
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .consumeWindowInsets(it)
+        ) {
 
         }
     }
