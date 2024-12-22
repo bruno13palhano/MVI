@@ -1,6 +1,6 @@
 package com.bruno13palhano.mvi.ui.di
 
-import com.bruno13palhano.mvi.ui.screens.HomeState
+import com.bruno13palhano.mvi.ui.screens.home.HomeState
 import com.bruno13palhano.mvi.ui.screens.other.OtherState
 import dagger.Module
 import dagger.Provides

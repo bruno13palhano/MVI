@@ -13,6 +13,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import com.bruno13palhano.mvi.BasePresenter
 import com.bruno13palhano.mvi.ui.di.PresenterEntryPoint
+import com.bruno13palhano.mvi.ui.screens.home.HomePresenter
 import com.bruno13palhano.mvi.ui.screens.other.OtherPresenter
 import dagger.hilt.EntryPoints
 import kotlinx.coroutines.flow.Flow

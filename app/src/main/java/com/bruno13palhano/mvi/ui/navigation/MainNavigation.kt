@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.bruno13palhano.mvi.ui.screens.HomeRoute
+import com.bruno13palhano.mvi.ui.screens.home.HomeRoute
 import com.bruno13palhano.mvi.ui.screens.other.OtherRoute
 import kotlinx.serialization.Serializable
 
