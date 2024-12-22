@@ -26,17 +26,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun HomeRoute(
-    viewModel: HomeViewModel = hiltViewModel()
+    navigateToOtherScreen: (text: String) -> Unit,
+    homePresenter: HomePresenter = rememberPresenter(presenter = HomePresenter::class.java)
 ) {
-    val state by viewModel.states.collectAsStateWithLifecycle()
-    val effects = rememberFlowWithLifecycle(viewModel.effects)
-
+    val state by homePresenter.states.collectAsStateWithLifecycle()
+    val effects = rememberFlowWithLifecycle(homePresenter.effects)
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -44,7 +43,7 @@ internal fun HomeRoute(
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
-        viewModel.onAction(HomeAction.OnUpdateTexts)
+        homePresenter.onAction(HomeAction.OnUpdateTexts)
     }
 
     LaunchedEffect(effects) {
@@ -59,9 +58,7 @@ internal fun HomeRoute(
                     }
                 }
 
-                is HomeSideEffect.NavigateToOtherScreen -> {
-
-                }
+                is HomeSideEffect.NavigateToOtherScreen -> navigateToOtherScreen(effect.text)
 
                 is HomeSideEffect.DismissKeyboard -> {
                     focusManager.clearFocus(force = true)
@@ -74,7 +71,7 @@ internal fun HomeRoute(
     HomeContent(
         state = state,
         snackbarHostState = snackbarHostState,
-        onAction = viewModel::onAction
+        onAction = homePresenter::onAction
     )
 }
 
