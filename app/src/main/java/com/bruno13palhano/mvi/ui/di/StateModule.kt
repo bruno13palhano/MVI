@@ -1,6 +1,7 @@
 package com.bruno13palhano.mvi.ui.di
 
 import com.bruno13palhano.mvi.ui.screens.HomeState
+import com.bruno13palhano.mvi.ui.screens.other.OtherState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,4 +15,8 @@ internal object StateModule {
     @Provides
     @Singleton
     fun provideHomeState(): HomeState = HomeState.initialState
+
+    @Provides
+    @Singleton
+    fun provideOtherState(): OtherState = OtherState.initialState
 }
