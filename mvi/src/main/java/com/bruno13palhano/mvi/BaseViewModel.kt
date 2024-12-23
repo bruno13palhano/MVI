@@ -13,23 +13,23 @@ abstract class BaseViewModel<Action: ViewAction, Event: ViewEvent, State: ViewSt
     protected val actionProcessor: ActionProcessor<Action, State, Event>,
     protected val reducer: Reducer<State, Event, SideEffect>
 ) : ViewModel() {
-    private val _effects = Channel<SideEffect>(capacity = Channel.CONFLATED)
-    val effects = _effects.receiveAsFlow()
+    private val _sideEffect = Channel<SideEffect>(capacity = Channel.CONFLATED)
+    val sideEffect = _sideEffect.receiveAsFlow()
 
-    private val _states: MutableStateFlow<State> = MutableStateFlow(initialState)
-    val states: StateFlow<State> = _states
+    private val _state: MutableStateFlow<State> = MutableStateFlow(initialState)
+    val state: StateFlow<State> = _state
 
     fun onAction(action: Action) {
         viewModelScope.launch {
             actionProcessor.process(
                 action = action,
-                currentState = _states.value
+                currentState = _state.value
             ).collect { event ->
                 val (newState, sideEffect) =
-                    reducer.reduce(previousState = _states.value, event = event)
+                    reducer.reduce(previousState = _state.value, event = event)
 
-                _states.value = newState
-                sideEffect?.let { effect -> _effects.trySend(effect) }
+                _state.value = newState
+                sideEffect?.let { effect -> _sideEffect.trySend(effect) }
             }
         }
     }

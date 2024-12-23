@@ -40,8 +40,8 @@ internal fun HomeRoute(
     navigateToOtherScreen: (text: String) -> Unit,
     homePresenter: HomePresenter = rememberPresenter(presenter = HomePresenter::class.java)
 ) {
-    val state by homePresenter.states.collectAsStateWithLifecycle()
-    val effects = rememberFlowWithLifecycle(homePresenter.effects)
+    val state by homePresenter.state.collectAsStateWithLifecycle()
+    val sideEffect = rememberFlowWithLifecycle(homePresenter.sideEffect)
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -52,8 +52,8 @@ internal fun HomeRoute(
         homePresenter.onAction(HomeAction.OnUpdateTexts)
     }
 
-    LaunchedEffect(effects) {
-        effects.collect { effect ->
+    LaunchedEffect(sideEffect) {
+        sideEffect.collect { effect ->
             when (effect) {
                 is HomeSideEffect.ShowToast -> {
                     scope.launch {

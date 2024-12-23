@@ -27,11 +27,11 @@ internal fun OtherRoute(
     navigateBack: () -> Unit,
     otherPresenter: OtherPresenter = rememberPresenter(presenter = OtherPresenter::class.java)
 ) {
-    val state by otherPresenter.states.collectAsStateWithLifecycle()
-    val effects = rememberFlowWithLifecycle(otherPresenter.effects)
+    val state by otherPresenter.state.collectAsStateWithLifecycle()
+    val sideEffect = rememberFlowWithLifecycle(otherPresenter.sideEffect)
 
-    LaunchedEffect(effects) {
-        effects.collect { effect ->
+    LaunchedEffect(sideEffect) {
+        sideEffect.collect { effect ->
             when (effect) {
                 is OtherSideEffect.NavigateBack -> navigateBack()
             }
