@@ -22,8 +22,8 @@ abstract class BasePresenter<Action: ViewAction, Event: ViewEvent, State: ViewSt
     fun onAction(action: Action) {
         scope.launch {
             actionProcessor.process(
-                action = action, currentState = _states
-                .value
+                action = action,
+                currentState = _states.value
             ).collect { event ->
                 val (newState, sideEffect) =
                     reducer.reduce(previousState = _states.value, event = event)
