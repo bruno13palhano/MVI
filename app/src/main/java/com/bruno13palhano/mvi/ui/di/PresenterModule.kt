@@ -1,5 +1,6 @@
 package com.bruno13palhano.mvi.ui.di
 
+import android.content.Context
 import com.bruno13palhano.mvi.repository.Repository
 import com.bruno13palhano.mvi.ui.screens.home.HomePresenter
 import com.bruno13palhano.mvi.ui.screens.home.HomeState
@@ -8,6 +9,7 @@ import com.bruno13palhano.mvi.ui.screens.other.OtherState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
@@ -31,9 +33,11 @@ internal object PresenterModule {
     @Provides
     fun provideOtherPresenter(
         otherInitialState: OtherState,
-        @IOScope ioScope: CoroutineScope
+        @IOScope ioScope: CoroutineScope,
+        @ApplicationContext context: Context
     ): OtherPresenter = OtherPresenter(
         initialState = otherInitialState,
-        ioScope = ioScope
+        ioScope = ioScope,
+        context = context
     )
 }
