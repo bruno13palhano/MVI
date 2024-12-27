@@ -21,9 +21,14 @@ internal object DispatcherModule {
     @Provides
     @Dispatcher(MVIDispatchers.MAIN)
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @Provides
+    @Dispatcher(MVIDispatchers.DEFAULT)
+    fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 }
 
 enum class MVIDispatchers {
     IO,
-    MAIN
+    MAIN,
+    DEFAULT
 }
