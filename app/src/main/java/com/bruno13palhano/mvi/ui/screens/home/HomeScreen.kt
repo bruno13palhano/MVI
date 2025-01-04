@@ -29,27 +29,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bruno13palhano.mvi.ui.screens.clickableWithoutRipple
 import com.bruno13palhano.mvi.ui.screens.rememberFlowWithLifecycle
-import com.bruno13palhano.mvi.ui.screens.rememberPresenter
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun HomeRoute(
     navigateToOtherScreen: (text: String) -> Unit,
-    homePresenter: HomePresenter = rememberPresenter(presenter = HomePresenter::class.java)
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val state by homePresenter.state.collectAsStateWithLifecycle()
-    val sideEffect = rememberFlowWithLifecycle(homePresenter.sideEffect)
+    val state by viewModel.container.state.collectAsStateWithLifecycle()
+    val sideEffect = rememberFlowWithLifecycle(viewModel.container.sideEffect)
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // Only call on first composition
     LaunchedEffect(Unit) {
-        homePresenter.onAction(HomeAction.OnUpdateTexts)
+        if (state.texts.isEmpty()) viewModel.handleEvent(HomeEvent.UpdateTexts)
     }
 
     LaunchedEffect(sideEffect) {
@@ -77,7 +79,7 @@ internal fun HomeRoute(
     HomeContent(
         state = state,
         snackbarHostState = snackbarHostState,
-        onAction = homePresenter::onAction
+        onEvent = viewModel::handleEvent
     )
 }
 
@@ -86,12 +88,12 @@ internal fun HomeRoute(
 private fun HomeContent(
     snackbarHostState: SnackbarHostState,
     state: HomeState,
-    onAction: (action: HomeAction) -> Unit
+    onEvent: (event: HomeEvent) -> Unit
 ) {
     Scaffold(
         modifier = Modifier
             .consumeWindowInsets(WindowInsets.safeDrawing)
-            .clickableWithoutRipple { onAction(HomeAction.OnDismissKeyboard) },
+            .clickableWithoutRipple { onEvent(HomeEvent.DismissKeyboard) },
         topBar = {
             TopAppBar(
                 title = { Text(text = "MVI") }
@@ -99,7 +101,7 @@ private fun HomeContent(
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
-            FloatingActionButton(onClick = { onAction(HomeAction.OnValidate) }) {
+            FloatingActionButton(onClick = { onEvent(HomeEvent.Done) }) {
                 Text(text = "Done")
             }
         }
@@ -120,6 +122,7 @@ private fun HomeContent(
             LazyColumn(
                 modifier = Modifier
                     .padding(it)
+                    .fillMaxWidth()
                     .consumeWindowInsets(it)
             ) {
                 stickyHeader {

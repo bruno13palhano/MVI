@@ -1,15 +1,11 @@
 package com.bruno13palhano.mvi.ui.screens.other
 
 import androidx.compose.runtime.Immutable
-import com.bruno13palhano.mvi.ViewAction
-import com.bruno13palhano.mvi.ViewEvent
-import com.bruno13palhano.mvi.ViewSideEffect
-import com.bruno13palhano.mvi.ViewState
 
 @Immutable
 internal data class OtherState(
     val isLoading: Boolean
-) : ViewState {
+) {
     companion object {
         val initialState = OtherState(
             isLoading = false
@@ -18,17 +14,15 @@ internal data class OtherState(
 }
 
 @Immutable
-internal sealed class OtherEvent : ViewEvent {
+internal sealed class OtherEvent {
     data class Loading(val isLoading: Boolean) : OtherEvent()
+    data object WorkDone : OtherEvent()
     data object NavigateBack : OtherEvent()
 }
 
 @Immutable
-internal sealed class OtherSideEffect : ViewSideEffect {
+internal sealed class OtherSideEffect {
+    data class WorkDone(val message: String) : OtherSideEffect()
+    data class WorkProcessing(val message: String) : OtherSideEffect()
     data object NavigateBack : OtherSideEffect()
-}
-
-@Immutable
-internal sealed class OtherAction : ViewAction {
-    data object OnNavigateBack : OtherAction()
 }
